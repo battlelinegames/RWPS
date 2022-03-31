@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Particle System</title>
+</head>
+<style>
+  canvas {
+    margin: auto;
+    display: block;
+    width: 1600px;
+  }
+
+  .input {
+    display: flexbox;
+    margin: 0.5rem 0;
+    padding: 0;
+    flex-direction: row;
+    align-items: left;
+    text-align: left;
+  }
+
+  .input div,
+  .input label {
+    display: inline-flex;
+    width: 40%;
+    margin: 0px;
+  }
+
+  .input input[type=number] {
+    width: 50%;
+    margin: 0px;
+  }
+
+  .burst {
+    margin: 0.5rem 0;
+    padding: 0;
+    flex-direction: row;
+    align-items: left;
+    text-align: left;
+  }
+
+  .burst div {
+    margin: 0.5rem;
+    display: inline-block;
+    font-size: 1.0rem;
+  }
+
+  .burst input[type=number] {
+    margin: 0.5rem 2rem;
+    display: inline-block;
+    border: 1px solid black;
+    border-radius: 2px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: lighter;
+    font-size: 1rem;
+    width: 8rem;
+  }
+
+
+
+  input[type=number] {
+    border: 2px solid black;
+    border-radius: 5px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: lighter;
+    font-size: 1.5rem;
+  }
+
+  input[type=checkbox] {
+    display: inline-block;
+    size: 2rem;
+  }
+
+  .group {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-variant: small-caps;
+    font-weight: lighter;
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    background-color: #eef;
+    border-radius: 1rem;
+    padding: 2rem;
+    width: 22%;
+    height: 15rem;
+    margin: 0.5rem;
+  }
+
+  .controls {
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  #display {
+    font-size: 2rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bolder;
+  }
+</style>
+
+<body>
+  <canvas id="cnvs" width="1600" height="900"></canvas>
+  <div id="display">Display Text</div>
+  <div class="controls">
+    <div class="group">
+      <div class="input">
+        <div>X:</div><input id="x" type="number" value="0.0" />
+      </div>
+      <div class="input">
+        <div>Y:</div><input id="y" type="number" value="0.0" />
+      </div>
+      <div class="input">
+        <div>Run Time:</div><input id="runtime" type="number" value="20000" step="1" />
+      </div>
+      <div class="input">
+        <label for="runloop">Loop:</label>
+        <input type="checkbox" id="runloop" name="runloop">
+      </div>
+
+    </div>
+
+    <div class="group">
+      <div class="input">
+        <div>Life Time:</div><input id="lifetime" type="number" value="1000" step="1" />
+      </div>
+      <div class="input">
+        <div>Life Variance:</div><input id="lifevariance" type="number" value="0" step="1" />
+      </div>
+      <div class="input">
+        <div>Particles/Sec:</div><input id="particlePerSecond" type="number" value="2.0" />
+      </div>
+      <div class="input">
+        <div>Max Particles:</div><input id="maxParticles" type="number" value="100" />
+      </div>
+    </div>
+
+    <div class="group">
+      <!--
+      <div class="input">
+        <div>Start Delay:</div><input id="startDelay" type="number" value="1000" />
+      </div>
+      -->
+      <div class="input">
+        <div>Start Speed Min:</div><input id="startSpeedMin" type="number" value="0.005" />
+      </div>
+      <div class="input">
+        <div>Start Speed Variance:</div><input id="startSpeedVariance" type="number" value="0.0" />
+      </div>
+      <div class="input">
+        <div>Gravity:</div><input id="gravity" type="number" value="0.0001" />
+      </div>
+      <div class="input">
+        <div>Accelerate:</div><input id="accelerate" type="number" value="0.0" />
+      </div>
+      <div class="input">
+        <div>Friction:</div><input id="friction" type="number" value="0.0" />
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="input">
+        <div>Start Size Min:</div><input id="startSizeMin" type="number" value="0.125" />
+      </div>
+      <div class="input">
+        <div>End Size Min:</div><input id="endSizeMin" type="number" value="0.0125" />
+      </div>
+      <div class="input">
+        <div>Size Variance:</div><input id="sizeVariance" type="number" value="0.0" />
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="input">
+        <div>Start Rotation Min:</div><input id="startRotationMin" type="number" value="0.0" />
+      </div>
+      <div class="input">
+        <div>Rotation Variance:</div><input id="startRotationVariance" type="number" value="0.0" />
+      </div>
+      <div class="input">
+        <div>Angular Velocity Min:</div><input id="angularVelocityMin" type="number" value="0.0" />
+      </div>
+      <div class="input">
+        <div>Angular Velocity Varnce:</div><input id="angularVelocityVariance" type="number" value="0.0" />
+      </div>
+      <div class="input">
+        <label for="alignrotation">Align Rotation:</label>
+        <input type="checkbox" id="alignrotation" name="alignrotation">
+      </div>
+
+    </div>
+
+    <div class="group">
+      <div class="input">
+        <div>Start Color:</div><input id="startColor" type="color" value="#ffffff" />
+      </div>
+      <div class="input">
+        <div>End Color:</div><input id="endColor" type="color" value="#ffffff" />
+      </div>
+      <div class="input">
+        <div>Start Alpha:</div><input id="startAlpha" type="number" value="1.0" />
+      </div>
+      <div class="input">
+        <div>End Alpha:</div><input id="endAlpha" type="number" value="1.0" />
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="input">
+        <div>Emitter Shape:</div>
+        <select name="shape" id="shape">
+          <option value="square">Square</option>
+          <option value="rectangle">Rectangle</option>
+          <option value="circle">Circle</option>
+          <option value="ellipse">Ellipse</option>
+        </select>
+      </div>
+      <div class="input">
+        <div>Emitter Size:</div><input id="emitterSize" type="number" value="0.0" />
+      </div>
+      <div class="input">
+        <label for="animated">Animated:</label>
+        <input type="checkbox" id="animated" name="animated">
+      </div>
+      <div class="input">
+        <div>Sprite File:</div><input id="spriteFile" type="file" />
+      </div>
+    </div>
+
+
+    <div class="group">
+      <div>Burst:</div>
+      <div class="burst">
+        <div>Time:</div><input id="burstTime1" type="number" value="100" step="1" />
+        <div>Particles:</div><input id="burstCount1" type="number" value="0" step="1" />
+      </div>
+      <div class="burst">
+        <div>Time:</div><input id="burstTime2" type="number" value="0" step="1" />
+        <div>Particles:</div><input id="burstCount2" type="number" value="0" step="1" />
+      </div>
+      <div class="burst">
+        <div>Time:</div><input id="burstTime3" type="number" value="0" step="1" />
+        <div>Particles:</div><input id="burstCount3" type="number" value="0" step="1" />
+      </div>
+      <div class="burst">
+        <div>Time:</div><input id="burstTime4" type="number" value="0" step="1" />
+        <div>Particles:</div><input id="burstCount4" type="number" value="0" step="1" />
+      </div>
+    </div>
+
+  </div>
+
+  <!-- I NEED A BURST ARRAY -->
+  <!-- SHAPE DROP DOWN -->
+  <!--
+    public burst: { [time: number]: number } = {};
+    public shape: iEmitterShape = null;
+
+    public size: { [time: number]: number } = {};
+  -->
+</body>
+<script type="module">
+  import { gameInit, particleSystem } from "./game.js";
+  import { ParticleSystem } from "./particleSystem.js";
+
+  //let startDelay = document.getElementById("startDelay");
+  let maxParticles = document.getElementById("maxParticles");
+  let display = document.getElementById("display");
+  gameInit(document.getElementById('cnvs'), parseInt(maxParticles.value), 100, display);
+
+  let x = document.getElementById("x");
+  let y = document.getElementById("y");
+  let lifeTime = document.getElementById("lifetime");
+  let lifeVariance = document.getElementById("lifevariance");
+  let particlePerSecond = document.getElementById("particlePerSecond");
+  let startSpeedMin = document.getElementById("startSpeedMin");
+  let startSpeedVariance = document.getElementById("startSpeedVariance");
+  let gravity = document.getElementById("gravity");
+  let accelerate = document.getElementById("accelerate");
+  let friction = document.getElementById("friction");
+  let startSizeMin = document.getElementById("startSizeMin");
+  let endSizeMin = document.getElementById("endSizeMin");
+  let sizeVariance = document.getElementById("sizeVariance");
+  let startRotationMin = document.getElementById("startRotationMin");
+  let startRotationVariance = document.getElementById("startRotationVariance");
+  let startColor = document.getElementById("startColor");
+  let endColor = document.getElementById("endColor");
+  let startAlpha = document.getElementById("startAlpha");
+  let endAlpha = document.getElementById("endAlpha");
+  let angularVelocityMin = document.getElementById("angularVelocityMin");
+  let angularVelocityVariance = document.getElementById("angularVelocityVariance");
+  let animated = document.getElementById("animated");
+  let emitterShape = document.getElementById("shape");
+  let spriteFile = document.getElementById("spriteFile");
+
+  let runtime = document.getElementById("runtime");
+  let runloop = document.getElementById("runloop");
+  let burstTime1 = document.getElementById("burstTime1");
+  let burstTime2 = document.getElementById("burstTime2");
+  let burstTime3 = document.getElementById("burstTime3");
+  let burstTime4 = document.getElementById("burstTime4");
+  let burstCount1 = document.getElementById("burstCount1");
+  let burstCount2 = document.getElementById("burstCount2");
+  let burstCount3 = document.getElementById("burstCount3");
+  let burstCount4 = document.getElementById("burstCount4");
+  let alignrotation = document.getElementById("alignrotation");
+  let emitterSize = document.getElementById("emitterSize");
+
+  emitterSize.onchange = () => {
+    particleSystem.emitterSize = parseFloat(emitterSize.value);
+  }
+
+  runtime.onchange = () => {
+    particleSystem.runtime = parseInt(runtime.value);
+  }
+
+  runloop.onchange = () => {
+    particleSystem.runloop = runloop.checked;
+  }
+
+  alignrotation.onchange = () => {
+    particleSystem.alignrotation = alignrotation.checked;
+  }
+
+  burstTime1.onchange = () => {
+    particleSystem.burstTime1 = parseInt(burstTime1.value);
+  }
+
+  burstTime2.onchange = () => {
+    particleSystem.burstTime2 = parseInt(burstTime2.value);
+  }
+
+  burstTime3.onchange = () => {
+    particleSystem.burstTime3 = parseInt(burstTime3.value);
+  }
+
+  burstTime4.onchange = () => {
+    particleSystem.burstTime4 = parseInt(burstTime4.value);
+  }
+
+  burstCount1.onchange = () => {
+    particleSystem.burstCount1 = parseInt(burstCount1.value);
+  }
+
+  burstCount2.onchange = () => {
+    particleSystem.burstCount2 = parseInt(burstCount2.value);
+  }
+
+  burstCount3.onchange = () => {
+    particleSystem.burstCount3 = parseInt(burstCount3.value);
+  }
+
+  burstCount4.onchange = () => {
+    particleSystem.burstCount4 = parseInt(burstCount4.value);
+  }
+
+  x.onchange = () => {
+    particleSystem.x = parseFloat(x.value);
+  }
+
+  y.onchange = () => {
+    particleSystem.y = parseFloat(y.value);
+  }
+
+  lifeTime.onchange = () => {
+    particleSystem.lifeTime = parseInt(lifeTime.value);
+  }
+
+  lifeVariance.onchange = () => {
+    particleSystem.lifeTimeVariance = parseInt(lifeVariance.value);
+  }
+
+  particlePerSecond.onchange = () => {
+    particleSystem.particlesPerSec = parseFloat(particlePerSecond.value);
+  }
+
+  /*
+  startDelay.onchange = () => {
+    particleSystem.startDelay = parseFloat(startDelay.value);
+  }
+  */
+
+  startSpeedMin.onchange = () => {
+    particleSystem.startSpeedMin = parseFloat(startSpeedMin.value);
+  }
+
+  startSpeedVariance.onchange = () => {
+    particleSystem.startSpeedVariance = parseFloat(startSpeedVariance.value);
+  }
+
+  gravity.onchange = () => {
+    particleSystem.gravity = parseFloat(gravity.value);
+  }
+
+  accelerate.onchange = () => {
+    particleSystem.accelerate = parseFloat(accelerate.value);
+  }
+
+  friction.onchange = () => {
+    particleSystem.friction = parseFloat(friction.value);
+  }
+
+  startSizeMin.onchange = () => {
+    particleSystem.startSizeMin = parseFloat(startSizeMin.value);
+  }
+
+  endSizeMin.onchange = () => {
+    particleSystem.endSizeMin = parseFloat(endSizeMin.value);
+  }
+
+  sizeVariance.onchange = () => {
+    particleSystem.sizeVariance = parseFloat(sizeVariance.value);
+  }
+
+  startRotationMin.onchange = () => {
+    particleSystem.startRotationMin = parseFloat(startRotationMin.value);
+  }
+
+  startRotationVariance.onchange = () => {
+    particleSystem.startRotationVariance = parseFloat(startRotationVariance.value);
+  }
+
+  startColor.onchange = () => {
+    particleSystem.startColor = startColor.value;
+  }
+
+  endColor.onchange = () => {
+    particleSystem.endColor = endColor.value;
+  }
+
+  startAlpha.onchange = () => {
+    particleSystem.startAlpha = parseFloat(startAlpha.value);
+  }
+
+  endAlpha.onchange = () => {
+    particleSystem.endAlpha = parseFloat(endAlpha.value);
+  }
+
+  angularVelocityMin.onchange = () => {
+    particleSystem.angularVelocityMin = parseFloat(angularVelocityMin.value);
+  }
+
+  angularVelocityVariance.onchange = () => {
+    particleSystem.angularVelocityVariance = parseFloat(angularVelocityVariance.value);
+  }
+
+  emitterShape.onchange = () => {
+    particleSystem.emitterShape = ParticleSystem.stringToShape(emitterShape.value);
+  }
+
+  animated.onchange = () => {
+    particleSystem.animated = !!animated.checked;
+  }
+
+  spriteFile.value = '';
+  spriteFile.onchange = (evt) => {
+    console.log(evt.target.files[0])
+    particleSystem.setSprite(evt.target.files[0]);
+  }
+
+  animated.onchange();
+  startAlpha.onchange();
+  startRotationVariance.onchange();
+  endSizeMin.onchange();
+  startSizeMin.onchange();
+  startSpeedVariance.onchange();
+  gravity.onchange();
+  accelerate.onchange();
+  friction.onchange();
+  alignrotation.onchange();
+  startSpeedMin.onchange();
+  particlePerSecond.onchange();
+  x.onchange();
+  y.onchange();
+  lifeTime.onchange();
+  lifeVariance.onchange();
+  sizeVariance.onchange();
+  startRotationMin.onchange();
+  startColor.onchange();
+  endColor.onchange();
+  endAlpha.onchange();
+  angularVelocityMin.onchange();
+  angularVelocityVariance.onchange();
+  emitterShape.onchange();
+  runtime.onchange();
+  emitterSize.onchange();
+
+  burstTime1.onchange();
+  burstTime2.onchange();
+  burstTime3.onchange();
+  burstTime4.onchange();
+
+  burstCount1.onchange();
+  burstCount2.onchange();
+  burstCount3.onchange();
+  burstCount4.onchange();
+  runloop.onchange();
+</script>
+
+</html>
